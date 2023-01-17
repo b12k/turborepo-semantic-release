@@ -1,0 +1,42 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    branches: master
+
+jobs:
+  release:
+    if: contains(github.event.head_commit.message, 'ci:') == false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Setup node cache
+        uses: actions/cache@v3
+        with:
+          path: '**/node_modules'
+          key: yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: yarn-
+      - name: Setup turbo cache
+        uses: actions/cache@v3
+        with:
+          path: '.turbo'
+          key: turbo-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: turbo-${{ github.ref_name }}-
+      - name: Install deps
+        run: yarn --ignore-scripts --prefer-offline --frozen-lockfile
+      - name: Setup git identity
+        run: |
+          git config user.name "Bogdan Kolesnyk"
+          git config user.email "bogdan.kolesnyk@gmail.com"
+      - name: Release
+        run: yarn release-it --cache-dir=.turbo
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

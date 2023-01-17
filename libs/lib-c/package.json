@@ -1,0 +1,16 @@
+{
+  "name": "lib-c",
+  "version": "0.0.0",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "semantic-release": "semantic-release --no-ci"
+  },
+  "devDependencies": {
+    "@semantic-release/changelog": "6.0.2",
+    "@semantic-release/git": "10.0.1",
+    "semantic-release": "20.0.2",
+    "semantic-release-config": "*",
+    "semantic-release-monorepo": "7.0.5"
+  }
+}
